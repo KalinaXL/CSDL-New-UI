@@ -12,7 +12,9 @@ student_serializer = {
     'fullname': fields.String,
     'address': fields.String,
     'gender': FormatGender,
-    'birthdate': FormatDateTime
+    'birthdate': FormatDateTime,
+    'username' : fields.String,
+    'password' : fields.String
 }
 
 teacher_serializer = {
@@ -22,7 +24,9 @@ teacher_serializer = {
     'email': fields.String,
     'gender': FormatGender,
     'phonenumber': fields.String,
-    'identity_card_id': fields.String,
+    'identitycardnumber': fields.String,
     'group_id': fields.Integer,
-    'birthdate': FormatDateTime
+    'birthdate': FormatDateTime,
+    'username' : fields.String,
+    'password' : fields.String
 }

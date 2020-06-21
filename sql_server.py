@@ -36,16 +36,35 @@ class SQLServer:
         self.conn.commit()
         return self.cursor.rowcount
     def add_one_student(self, args):
-        id, fullname, address, gender, birthdate = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate']
+        id, fullname, address, gender, birthdate, username, password = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate'], args['username'], args['password']
         try:
-            self.cursor.execute(f"INSERT Student VALUES('{id}', N'{fullname}', N'{address}', '{gender}', '{convert_to_date_iso8601(birthdate)}')")
+            self.cursor.execute(f"INSERT [User] VALUES('{id}', N'{username}', N'{password}', 'S')")
+            self.cursor.execute(f"INSERT Student VALUES('{id}', N'{fullname}', N'{address}', '{gender[0]}', '{convert_to_date_iso8601(birthdate)}')")
         except pyodbc.IntegrityError as e:
             return "Can't have 2 students that have same id"
+        self.conn.commit()
+        return self.cursor.rowcount
+    def update_one_student(self, args):
+        id, fullname, address, gender, birthdate = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate']
+        try:
+            self.cursor.execute(f"UPDATE Student SET fullname='{fullname}', address='{address}', gender='{gender[0]}', birthdate='{convert_to_date_iso8601(birthdate)}' WHERE id='{id}'")
+        except pyodbc.IntegrityError as e:
+            return "Update error"
         self.conn.commit()
         return self.cursor.rowcount
     def get_all_teachers(self):
         df = pd.read_sql("SELECT * FROM Teacher", self.conn)
         return [Teacher(*kwargs.values()) for kwargs in df.to_dict(orient = 'records')]
+    def add_one_teacher(self, args):
+        id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate'], args['username'], args['password'], args['email'], args['phonenumber'], args['identitycardnumber'], args['group_id']
+        print(id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id)
+        try:
+            self.cursor.execute(f"INSERT [User] VALUES('{id}', N'{username}', N'{password}', 'T')")
+            self.cursor.execute(f"INSERT Teacher VALUES('{id}', N'{fullname}', '{gender[0]}', '{email}', N'{address}', '{phonenumber}', '{identitycardnumber}', '{convert_to_date_iso8601(birthdate)}', '{group_id}')")
+        except pyodbc.IntegrityError as e:
+            return "Can't have 2 teachers that have same id"
+        self.conn.commit()
+        return self.cursor.rowcount
     def close(self):
         self.conn.close()
 

@@ -7,10 +7,9 @@
     "SQL-Server":
     {
         "Driver": "{ODBC Driver 17 for SQL Server}",
-        "Server": "kalinaxl-7577",
+        "Server": "DESKTOP-RV6HJ0G",
         "Database": "HighSchoolDB",
-        "UID": "SA",
-        "PWD": "",
+        "Trusted_Connection": "yes",
         "Connect Timeout": 10
     },
     "path": "http://localhost:5000"
