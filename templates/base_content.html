@@ -152,8 +152,19 @@
                                 <i class="fas fa-chart-bar"></i>Charts</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('table') }}">
+                            <a class="js-arrow" href="#">
                                 <i class="fas fa-table"></i>Tables</a>
+                                <ul class="list-unstyled navbar__sub-list js-sub-list">
+                                    <li>
+                                        <a href="/table/student">Student</a>
+                                    </li>
+                                    <li>
+                                        <a href="/table/teacher">Teacher</a>
+                                    </li>
+                                    <li>
+                                        <a href="/table/subject">Subject</a>
+                                    </li>
+                                </ul>
                         </li>
                         <li>
                             <a href="form.html">

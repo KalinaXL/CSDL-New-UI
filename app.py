@@ -4,7 +4,7 @@ import os
 from functools import wraps
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from flask_restful import Api
-from resources import UserLogin, StudentListApi, StudentApi, TeacherListApi, StudentEditApi, TeacherAddApi
+from resources import *
 from utils import is_name, is_email, is_phone_number, is_valid_date
 
 with open("config.json", "r") as f:
@@ -31,6 +31,12 @@ api.add_resource(StudentApi, '/students/<string:id>' )
 api.add_resource(TeacherListApi, '/teachers')
 api.add_resource(StudentEditApi, '/students/edit')
 api.add_resource(TeacherAddApi, '/teachers/add')
+api.add_resource(TeacherDeleteApi, '/teachers/<string:id>')
+api.add_resource(TeacherEditApi, '/teachers/edit')
+api.add_resource(SubjectListApi, '/subjects')
+api.add_resource(SubjectAddApi, '/subjects/add')
+api.add_resource(SubjectDeleteApi, '/subjects/<string:id>')
+api.add_resource(SubjectEditApi, '/subjects/edit')
 
 @app.route('/', methods = ['GET', 'POST'])
 def login():
@@ -69,18 +75,32 @@ def chart():
     return render_template('chart.html')
 
 @app.route('/table')
+@app.route('/table/student')
 def table():
     response = requests.get(f'{path}/students')
     if response:
         students = response.json()
     else:
         students = []
+    return render_template('table-student.html', students=students)
+
+@app.route('/table/teacher')
+def table_teacher():
     response = requests.get(f'{path}/teachers')
     if response:
         teachers = response.json()
     else:
         teachers = []
-    return render_template('table.html', students=students, teachers=teachers)
+    return render_template('table-teacher.html', teachers=teachers)
+
+@app.route('/table/subject')
+def table_subject():
+    response = requests.get(f'{path}/subjects')
+    if response:
+        subjects = response.json()
+    else:
+        subjects = []
+    return render_template('table-subject.html', subjects=subjects)
 
 @app.route('/form')
 def form():
@@ -135,12 +155,31 @@ def delete_student(id):
     else:
         flash(output.get('message'), 'success')
     return redirect(url_for('table'))
-@app.route('/delete-teacher/<string:id>')
+
+@login_required
+@app.route('/delete_teacher/<string:id>')
 def delete_teacher(id):
-    return 'delete student'
+    response = requests.delete(f'{path}/teachers/{id}')
+    output = response.json()
+    if 'error' in output:
+        flash(output.get('error'), 'error')
+    else:
+        flash(output.get('message'), 'success')
+    return redirect('/table/teacher')
+
+@login_required
 @app.route('/edit-teacher', methods = ['POST'])
-def edit_teacher(id):
-    return 'delete student'
+def edit_teacher():
+    if request.method == 'POST':
+        response = requests.post(f'{path}/teachers/edit', data = request.form)
+        output = response.json()
+        if 'error' in output:
+            flash(output['error'], 'error')
+        else:
+            flash(output['message'], 'success')
+    return redirect('/table/teacher')
+
+@login_required
 @app.route('/add-teacher', methods = ['POST'])
 def add_teacher():
     if request.method == 'POST':
@@ -150,10 +189,42 @@ def add_teacher():
             flash(output['error'], 'error')
         else:
             flash(output['message'], 'success')
-    return redirect(url_for('table'))
-@app.route('/')
+    return redirect('/table/teacher')
+
+@login_required
+@app.route('/delete_subject/<string:id>')
+def delete_subject(id):
+    response = requests.delete(f'{path}/subjects/{id}')
+    output = response.json()
+    if 'error' in output:
+        flash(output.get('error'), 'error')
+    else:
+        flash(output.get('message'), 'success')
+    return redirect('/table/subject')
+
+@login_required
+@app.route('/edit-subject', methods = ['POST'])
+def edit_subject():
+    if request.method == 'POST':
+        response = requests.post(f'{path}/subjects/edit', data = request.form)
+        output = response.json()
+        if 'error' in output:
+            flash(output['error'], 'error')
+        else:
+            flash(output['message'], 'success')
+    return redirect('/table/subject')
+
+@login_required
+@app.route('/add-subject', methods = ['POST'])
 def add_subject():
-    return 'delete student'
+    if request.method == 'POST':
+        response = requests.post(f'{path}/subjects/add', data = request.form)
+        output = response.json()
+        if 'error' in output:
+            flash(output['error'], 'error')
+        else:
+            flash(output['message'], 'success')
+    return redirect('/table/subject')
 
 
 if __name__ == "__main__":

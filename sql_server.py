@@ -1,7 +1,7 @@
 import json
 import pyodbc
 import pandas as pd
-from models import Student, Teacher
+from models import Student, Teacher, Subject
 from utils import convert_to_date_iso8601
 
 with open("config.json", "r") as f:
@@ -33,6 +33,7 @@ class SQLServer:
         return [Student(*kwargs.values()) for kwargs in df.to_dict(orient='records')]
     def delete_one_student(self, id):
         self.cursor.execute(f"DELETE Student WHERE Id = {id}")
+        self.cursor.execute(f"DELETE [User] WHERE Id = {id}")
         self.conn.commit()
         return self.cursor.rowcount
     def add_one_student(self, args):
@@ -52,12 +53,14 @@ class SQLServer:
             return "Update error"
         self.conn.commit()
         return self.cursor.rowcount
+    
     def get_all_teachers(self):
         df = pd.read_sql("SELECT * FROM Teacher", self.conn)
         return [Teacher(*kwargs.values()) for kwargs in df.to_dict(orient = 'records')]
+    
     def add_one_teacher(self, args):
         id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate'], args['username'], args['password'], args['email'], args['phonenumber'], args['identitycardnumber'], args['group_id']
-        print(id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id)
+        # print(id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id)
         try:
             self.cursor.execute(f"INSERT [User] VALUES('{id}', N'{username}', N'{password}', 'T')")
             self.cursor.execute(f"INSERT Teacher VALUES('{id}', N'{fullname}', '{gender[0]}', '{email}', N'{address}', '{phonenumber}', '{identitycardnumber}', '{convert_to_date_iso8601(birthdate)}', '{group_id}')")
@@ -65,6 +68,52 @@ class SQLServer:
             return "Can't have 2 teachers that have same id"
         self.conn.commit()
         return self.cursor.rowcount
+    
+    def delete_one_teacher(self, id):
+        self.cursor.execute(f"DELETE Teacher WHERE Id = {id}")
+        self.cursor.execute(f"DELETE [User] WHERE Id = {id}")
+        self.conn.commit()
+        return self.cursor.rowcount
+    
+    def update_one_teacher(self, args):
+        id, fullname, address, gender, birthdate, email, phonenumber, identitycardnumber, group_id = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate'], args['email'], args['phonenumber'], args['identitycardnumber'], args['group_id']
+        # print( birthdate, email, phonenumber, identitycardnumber, group_id)
+        try:
+            self.cursor.execute(f"UPDATE Teacher SET fullname='{fullname}', address='{address}', gender='{gender[0]}', birthdate='{convert_to_date_iso8601(birthdate)}', email='{email}', phonenumber='{phonenumber}', identitycardnumber='{identitycardnumber}',group_id='{group_id}'   WHERE id='{id}'")
+        except pyodbc.IntegrityError as e:
+            return "Update error"
+        self.conn.commit()
+        return self.cursor.rowcount
+    
+    def get_all_subjects(self):
+        df = pd.read_sql("SELECT * FROM Subject", self.conn)
+        return [Subject(*kwargs.values()) for kwargs in df.to_dict(orient = 'records')]
+
+    def add_one_subject(self, args):
+        id, name, num_periods, syllabus, ratio_score_15, ratio_score_45, ratio_score_final, id_group = args['id'], args['name'], args['num_periods'], args['syllabus'], args['ratio_score_15'], args['ratio_score_45'], args['ratio_score_final'], args['id_group']
+        print(id, name, num_periods, syllabus, ratio_score_15, ratio_score_45, ratio_score_final, id_group)
+        try:
+            self.cursor.execute(f"INSERT Subject VALUES('{id}', N'{name}', {num_periods}, '{syllabus}', {ratio_score_15}, {ratio_score_45}, {ratio_score_final}, {id_group})")
+        except pyodbc.IntegrityError as e:
+            return "Can't have 2 subjects that have same id"
+        self.conn.commit()
+        return self.cursor.rowcount
+    
+    def delete_one_subject(self, id):
+        self.cursor.execute(f"DELETE Subject WHERE Id = {id}")
+        self.conn.commit()
+        return self.cursor.rowcount
+    
+    def update_one_subject(self, args):
+        id, name, num_periods, syllabus, ratio_score_15, ratio_score_45, ratio_score_final, id_group = args['id'], args['name'], args['num_periods'], args['syllabus'], args['ratio_score_15'], args['ratio_score_45'], args['ratio_score_final'], args['id_group']
+        # print( birthdate, email, phonenumber, identitycardnumber, group_id)
+        try:
+            self.cursor.execute(f"UPDATE Subject SET name='{name}', num_periods='{num_periods}', syllabus='{syllabus}', ratio_score_15='{ratio_score_15}', ratio_score_45='{ratio_score_45}', ratio_score_final='{ratio_score_final}', id_group='{id_group}'   WHERE id='{id}'")
+        except pyodbc.IntegrityError as e:
+            return "Update error"
+        self.conn.commit()
+        return self.cursor.rowcount
+
     def close(self):
         self.conn.close()
 

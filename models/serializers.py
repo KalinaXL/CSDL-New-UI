@@ -20,13 +20,24 @@ student_serializer = {
 teacher_serializer = {
     'id': fields.String,
     'fullname': fields.String,
-    'address': fields.String,
-    'email': fields.String,
     'gender': FormatGender,
+    'email': fields.String,
+    'address': fields.String,
     'phonenumber': fields.String,
     'identitycardnumber': fields.String,
-    'group_id': fields.Integer,
     'birthdate': FormatDateTime,
+    'group_id': fields.Integer,
     'username' : fields.String,
     'password' : fields.String
+}
+
+subject_serializer = {
+    'id': fields.String,
+    'name': fields.String,
+    'num_periods': fields.Integer,
+    'syllabus': fields.String,
+    'ratio_score_15': fields.Integer,
+    'ratio_score_45': fields.Integer,
+    'ratio_score_final': fields.Integer,
+    'id_group': fields.Integer
 }

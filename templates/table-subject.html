@@ -1,0 +1,225 @@
+{% extends 'base_content.html' %} 
+{% block title %} Bảng {% endblock %} 
+{% block content %}
+<!-- MAIN CONTENT-->
+
+<!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/> -->
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="tab-content">
+        
+            <div class="container-fluid">
+                <div class="table-responsive table--no-card m-b-30">
+                    {% if subjects %}
+                    <table class="table table-hover">
+                        <thead class="text-success">
+                            <th>Subject ID</th>
+                            <th>Name</th>
+                            <th>Num Periods</th>
+                            <th>Syllabus</th>
+                            <th>Ratio 15</th>
+                            <th>Ratio 45</th>
+                            <th>Ratio final</th>
+                            <th>Group id</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </thead>
+                        <tbody>
+                            {% for subject in subjects %}
+                            <tr>
+                                <td>{{ subject.id }}</td>
+                                <td>{{ subject.name }}</td>
+                                <td>{{ subject.num_periods }}</td>
+                                <td>{{ subject.syllabus }}</td>
+                                <td>{{ subject.ratio_score_15 }}</td>
+                                <td>{{ subject.ratio_score_45 }}</td>
+                                <td>{{ subject.ratio_score_final }}</td>
+                                <td>{{ subject.id_group }}</td>
+                                <td>
+                                    <button type="button" rel="tooltip" title="Edit" class="btn btn-success btn-simple btn-xs" data-toggle="modal" data-target="#edit-subject-{{subject.id}}-modal">
+                                        <i class="material-icons" style="color: purple;">edit</i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" rel="tooltip" title="Delete" class="btn btn-danger btn-simple btn-xs">
+                                        <a href="{{ url_for('delete_subject', id=subject.id) }}">
+                                            <i class="material-icons" style="color: white;">delete_forever</i>
+                                        </a>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p> There are currently no subjects in the database. </p>
+                    {% endif %}
+                </div>
+                <button class="btn" style="background-color: #ff9800;" data-toggle="modal" data-target="#add-subject-modal">
+                    Add Subject
+                </button>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="subject-table">
+                    <p>this is subject content</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="copyright">
+                    <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="add-subject-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Subject</h4>
+            </div>
+            <div class="modal-body">
+                <form class="login-form" action="{{ url_for('add_subject')}}" method="post" style="padding-right: 30px !important; padding-left: 30px !important;">
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Id</label>
+                            <input type="text" name="id" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Name</label>
+                            <input type="text" name="name" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Num Periods</label>
+                            <input type="text" name="num_periods" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Syllabus</label>
+                            <input type="text" name="syllabus" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">ratio score 15</label>
+                            <input type="text" name="ratio_score_15" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">ratio score 45</label>
+                            <input type="text" name="ratio_score_45" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">ratio score final</label>
+                            <input type="text" name="ratio_score_final" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">group id</label>
+                            <input type="text" name="id_group" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-login float-right" style="background-color:#4BD1A0;">SUBMIT
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="background-color:#ef5350;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if subjects %} 
+{% for subject in subjects %}
+<div class="modal fade" id="edit-subject-{{subject.id}}-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit subject</h4>
+            </div>
+            <div class="modal-body">
+                <form class="login-form" action="{{ url_for('edit_subject')}}" method="post" style="padding-right: 30px !important; padding-left: 30px !important;">
+                    <!-- <div class="row"> -->
+                    <div hidden>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Id</label>
+                            <input type="text" name="id" class="form-control" value="{{subject.id}}" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Name</label>
+                            <input type="text" name="name" class="form-control" value="{{subject.name}}" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Num Periods</label>
+                            <input type="text" name="num_periods" class="form-control" value="{{subject.num_periods}}" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">Syllabus</label>
+                            <input type="text" name="syllabus" class="form-control" value="{{subject.syllabus}}" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">ratio score 15</label>
+                            <input type="text" name="ratio_score_15" class="form-control" value="{{subject.ratio_score_15}}" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">ratio score 45</label>
+                            <input type="text" name="ratio_score_45" class="form-control" value="{{subject.ratio_score_45}}" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">ratio score final</label>
+                            <input type="text" name="ratio_score_final" class="form-control" value="{{subject.ratio_score_final}}" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label class="bmd-label-floating">group id</label>
+                            <input type="text" name="id_group" class="form-control" value="{{subject.id_group}}" required>
+                        </div>
+                    </div>
+
+                    <!-- </div> -->
+
+                    <button type="submit" class="btn btn-login float-right" style="background-color:#4BD1A0;">EDIT
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="background-color:#ef5350;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endfor %} 
+{% endif %} 
+{% endblock %}
+
+<!-- end document-->
