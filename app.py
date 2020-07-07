@@ -63,7 +63,7 @@ def dashboard():
         students = response.json()
     else:
         students = []
-    response = requests.get(f'{path}/teachers')
+    response = requests.get(f'{path}/teachers?fitter=1')
     if response:
         teachers = response.json()
     else:
@@ -74,7 +74,6 @@ def dashboard():
 def chart():
     return render_template('chart.html')
 
-@app.route('/table')
 @app.route('/table/student')
 def table():
     response = requests.get(f'{path}/students')
@@ -84,9 +83,11 @@ def table():
         students = []
     return render_template('table-student.html', students=students)
 
+@app.route('/table')
 @app.route('/table/teacher')
 def table_teacher():
-    response = requests.get(f'{path}/teachers')
+    query_string = str(request.query_string)[2:-1]
+    response = requests.get(f'{path}/teachers?'+query_string)
     if response:
         teachers = response.json()
     else:

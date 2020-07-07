@@ -1,10 +1,36 @@
 from flask_restful import Resource, marshal_with, reqparse
+from flask import request
 from models import teacher_serializer
 from sql_server import sql
+from utils import convert_to_date_iso8601
 class TeacherListApi(Resource):
     @marshal_with(teacher_serializer)
     def get(self):
-        teachers = sql.get_all_teachers()
+        filter = request.args.get('fitter')
+        queryString = ' Where 1=1'
+        if(filter):
+            id = request.args.get('id')
+            fullname = request.args.get('fullname')
+            gender = request.args.get('gender')
+            email = request.args.get('email')
+            address = request.args.get('address')
+            phonenumber = request.args.get('phonenumber')
+            identitycardnumber = request.args.get('identitycardnumber')
+            birthdate1 = request.args.get('birthdate1')
+            birthdate2 = request.args.get('birthdate2')
+            group_id = request.args.get('group_id')
+            if(id): queryString += ' AND id LIKE \'%'+ id +'%\''
+            if(fullname): queryString += ' AND fullname LIKE \'%'+ fullname +'%\''
+            if(gender): queryString += ' AND gender = \''+ gender[0] +'\''
+            if(email): queryString += ' AND email LIKE \'%'+ email +'%\''
+            if(address): queryString += ' AND address LIKE \'%'+ address +'\'%'
+            if(phonenumber): queryString += ' AND phonenumber LIKE \'%'+ phonenumber +'%\''
+            if(identitycardnumber): queryString += ' AND identitycardnumber LIKE \'%'+ identitycardnumber +'%\''
+            if(birthdate1): queryString += ' AND Birthdate >= \''+ convert_to_date_iso8601(birthdate1) + '\''
+            if(birthdate2): queryString += ' AND Birthdate <= \''+ convert_to_date_iso8601(birthdate2) + '\''
+            if(group_id): queryString += ' AND group_id = '+ group_id
+            
+        teachers = sql.get_all_teachers(queryString)
         if teachers:
             return teachers
         return {"error": "No teachers"}, 404

@@ -1,10 +1,12 @@
--- CREATE DATABASE HighSchoolDB
+CREATE DATABASE HighSchoolDB
+GO
 USE HighSchoolDB
 GO
 
+
 CREATE TABLE [User]
 (
-	Id CHAR(9) PRIMARY KEY,
+	Id VARCHAR(9) PRIMARY KEY,
 	Username VARCHAR(20) UNIQUE NOT NULL,
 	Password VARCHAR(20) NOT NULL,
 	Permission VARCHAR(6) NOT NULL
@@ -12,7 +14,7 @@ CREATE TABLE [User]
 GO
 CREATE TABLE Student
 (
-	Id CHAR(9) PRIMARY KEY,
+	Id VARCHAR(9) PRIMARY KEY,
 	Fullname NVARCHAR(50) NOT NULL,
 	Address NVARCHAR(100) NOT NULL,
 	Gender CHAR(1) NOT NULL CHECK (Gender = 'F' OR Gender = 'M'),
@@ -23,7 +25,7 @@ GO
 
 CREATE TABLE PoorStudent
 (
-	Id CHAR(9) PRIMARY KEY,
+	Id VARCHAR(9) PRIMARY KEY,
 	Poorcode CHAR(10) NOT NULL,
 	Remuneration NVARCHAR(30) NOT NULL,
 	CONSTRAINT fk_id_pst_id_st FOREIGN KEY (Id) REFERENCES Student(Id)
@@ -31,14 +33,14 @@ CREATE TABLE PoorStudent
 
 CREATE TABLE WoundedStudent
 (
-	Id CHAR(9) PRIMARY KEY,
+	Id VARCHAR(9) PRIMARY KEY,
 	Type NVARCHAR(20) NOT NULL,
 	CONSTRAINT fk_wst_st_id FOREIGN KEY(Id) REFERENCES Student(Id)
 )
 
 CREATE TABLE Dependents
 (
-	Id_student CHAR(9),
+	Id_student VARCHAR(9),
 	Fullname VARCHAR(50),
 	Address NVARCHAR(100) NOT NULL,
 	Phonenumber CHAR(11) NOT NULL,
@@ -48,7 +50,7 @@ CREATE TABLE Dependents
 )
 CREATE TABLE Teacher
 (
-	Id CHAR(9) PRIMARY KEY,
+	Id VARCHAR(9) PRIMARY KEY,
 	Fullname NVARCHAR(50) NOT NULL,
 	Gender CHAR(1) CHECK(Gender = 'F' OR GENDER = 'M'),
 	Email VARCHAR(20) NOT NULL,
@@ -57,19 +59,19 @@ CREATE TABLE Teacher
 	Identitycardnumber VARCHAR(12) NOT NULL,
 	Birthdate DATE NOT NULL,
 	Group_id INT NOT NULL,
-	CONSTRAINT fk_id_tc_id_user FOREIGN KEY(Id) REFERENCES [User](Id)
+	CONSTRAINT fk_id_tc_id_user FOREIGN KEY(Id) REFERENCES [User](Id),
 )
 GO
 CREATE TABLE Teacher_degrees
 (
-	Id CHAR(9),
+	Id VARCHAR(9),
 	Degree NVARCHAR(20),
 	PRIMARY KEY(Id, Degree),
 	CONSTRAINT fk_id_tc_tcdegree_id_tc FOREIGN KEY(Id) REFERENCES Teacher(Id)
 )
 CREATE TABLE ContractTeacher
 (
-	Id CHAR(9) PRIMARY KEY,
+	Id VARCHAR(9) PRIMARY KEY,
 	Basicsalary FLOAT NOT NULL,
 	Startdate DATE NOT NULL,
 	Enddate DATE,
@@ -77,7 +79,7 @@ CREATE TABLE ContractTeacher
 )
 CREATE TABLE PayrollTeacher
 (
-	Id CHAR(9) PRIMARY KEY,
+	Id VARCHAR(9) PRIMARY KEY,
 	Salary FLOAT NOT NULL,
 	Bonus FLOAT,
 	Coefficient FLOAT NOT NULL,
@@ -86,13 +88,13 @@ CREATE TABLE PayrollTeacher
 
 CREATE TABLE Teacher_scores
 (
-	Id_assessor CHAR(9),
-	Id_judged CHAR(9),
+	Id_assessor VARCHAR(9),
+	Id_judged VARCHAR(9),
 	Date DATE,
 	Score FLOAT NOT NULL,
 	PRIMARY KEY (Id_assessor, Id_judged, Date),
-	CONSTRAINT fk_id_assessor_tcscore_id_tc FOREIGN KEY (Id_assessor) REFERENCES Teacher(Id),
-	CONSTRAINT fk_id_judged_idscore_id_tc FOREIGN KEY (Id_judged) REFERENCES Teacher(Id)
+	CONSTRAINT fk_id_assessor_tcscore_id_tc FOREIGN KEY (Id_assessor) REFERENCES PayrollTeacher(Id),
+	CONSTRAINT fk_id_judged_idscore_id_tc FOREIGN KEY (Id_judged) REFERENCES PayrollTeacher(Id)
 )
 
 GO
@@ -105,11 +107,12 @@ CREATE TABLE [Group]
 GO
 CREATE TABLE GroupLeader
 (
-	Id_leader CHAR(9),
-	start_date DATE,
+	Id_leader VARCHAR(9),
+	start_date DATE NOT NULL,
 	Id_group INT NOT NULL,
 	PRIMARY KEY(Id_leader, start_date),
-	CONSTRAINT fk_id_grleader_id_group FOREIGN KEY(Id_group) REFERENCES [Group](Id)
+	CONSTRAINT fk_id_grleader_id_group FOREIGN KEY(Id_group) REFERENCES [Group](Id),
+	CONSTRAINT fk_groupleader_id_tc FOREIGN KEY(Id_leader) REFERENCES [dbo].[Teacher](Id)
 )
 GO
 CREATE TABLE Subject
@@ -127,9 +130,10 @@ CREATE TABLE Subject
 GO
 CREATE TABLE Teacher_Subject
 (
-	Id_teacher CHAR(9),
+	Id_teacher VARCHAR(9),
 	Id_subject CHAR(6),
-	PRIMARY KEY(Id_teacher, Id_subject)
+	PRIMARY KEY(Id_teacher, Id_subject),
+	CONSTRAINT fk_tc_sub_id_tc FOREIGN KEY(Id_teacher) REFERENCES [dbo].[Teacher](Id)
 )
 GO
 CREATE TABLE Building
@@ -174,8 +178,8 @@ CREATE TABLE Class
 	Id_Year CHAR(10) NOT NULL,
 	Id_building CHAR(4),
 	Id_room CHAR(6),
-	Id_monitor CHAR(9),
-	Id_form_teacher CHAR(9),
+	Id_monitor VARCHAR(9),
+	Id_form_teacher VARCHAR(9),
 	CONSTRAINT fk_id_yearclass_id_year FOREIGN KEY(Id_year) REFERENCES YEAR(Id),
 	CONSTRAINT fk_id_buildingroom_class_id_room FOREIGN KEY(Id_building, Id_room) REFERENCES Room(Id_building, Id_room),
 	CONSTRAINT fk_id_monitorclass_id_student FOREIGN KEY(Id_monitor) REFERENCES Student(Id),
@@ -185,7 +189,7 @@ GO
 CREATE TABLE Join_Class
 (
 	Id_class CHAR(9),
-	Id_student CHAR(9),
+	Id_student VARCHAR(9),
 	conduct NVARCHAR(10),
 	title NVARCHAR (15) NOT NULL,
 	PRIMARY KEY(Id_class, Id_student),
@@ -201,7 +205,7 @@ CREATE TABLE Scores
 	Id_semester CHAR(5) NOT NULL,
 	Id_class CHAR(9) NOT NULL,
 	Id_subject CHAR(6) NOT NULL,
-	Id_student CHAR(9) NOT NULL,
+	Id_student VARCHAR(9) NOT NULL,
 	CONSTRAINT fk_id_semesterscores_id_semester FOREIGN KEY(Id_year, Id_semester) REFERENCES Semester(Id_Year, Id_Semester),
 	CONSTRAINT fk_id_classscores_id_class FOREIGN KEY(Id_class) REFERENCES Class(Id),
 	CONSTRAINT fk_id_subscores_id_sub FOREIGN KEY(Id_subject) REFERENCES Subject(Id),
@@ -232,7 +236,7 @@ CREATE TABLE Scheduler
 	Id_year CHAR(10) NOT NULL,
 	Id_semester CHAR(5) NOT NULL,
 	Id_class CHAR(9) NOT NULL CONSTRAINT fk_id_classscheduler_id_class REFERENCES Class(Id),
-	Id_teacher CHAR(9) NOT NULL CONSTRAINT fk_id_tearcherscheduler_id_teacher REFERENCES Teacher(Id),
+	Id_teacher VARCHAR(9) NOT NULL CONSTRAINT fk_id_tearcherscheduler_id_teacher REFERENCES Teacher(Id),
 	Id_subject CHAR(6) NOT NULL CONSTRAINT fk_id_subjectscheduler_id_subject REFERENCES Subject(Id),
 	CONSTRAINT fk_id_semesterscheduler_id_semester FOREIGN KEY(Id_year, Id_semester) REFERENCES Semester(Id_Year, Id_Semester)
 )
@@ -247,3 +251,39 @@ CREATE TABLE TeachingTime
 	PRIMARY KEY(Id_scheduler, day, session, start_hour),
 	CONSTRAINT fk_id_scheduler_teachingtime_id_scheduler FOREIGN KEY(Id_scheduler) REFERENCES Scheduler(Id)
 )
+GO
+ALTER TABLE dbo.Teacher ADD  CONSTRAINT fk_tc_id_group FOREIGN KEY(Group_id) REFERENCES dbo.[Group](Id)
+GO
+CREATE TRIGGER TG_Ass_1
+ON dbo.GroupLeader
+FOR INSERT
+AS
+BEGIN
+	DECLARE @num_inserted INT
+	DECLARE @num_checked INT
+	SELECT @num_inserted = COUNT(*)
+	FROM Inserted
+
+	SELECT @num_checked = COUNT(*)
+	FROM Teacher
+	JOIN Inserted
+	ON Id = Inserted.Id_leader AND Group_id = Inserted.Id_group
+
+	IF @num_checked <> @num_inserted
+	BEGIN
+		ROLLBACK TRAN
+	END
+
+	IF EXISTS
+	(
+		SELECT * 
+		FROM dbo.GroupLeader
+		JOIN Inserted
+		ON Inserted.Id_group = GroupLeader.Id_group
+		AND Inserted.start_date = GroupLeader.start_date
+	)
+	BEGIN
+		ROLLBACK TRAN
+	END
+
+END

@@ -39,7 +39,7 @@ class SQLServer:
     def add_one_student(self, args):
         id, fullname, address, gender, birthdate, username, password = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate'], args['username'], args['password']
         try:
-            self.cursor.execute(f"INSERT [User] VALUES('{id}', N'{username}', N'{password}', 'S')")
+            self.cursor.execute(f"INSERT [User] VALUES('{id}', N'{username}', N'{password}', 'HS')")
             self.cursor.execute(f"INSERT Student VALUES('{id}', N'{fullname}', N'{address}', '{gender[0]}', '{convert_to_date_iso8601(birthdate)}')")
         except pyodbc.IntegrityError as e:
             return "Can't have 2 students that have same id"
@@ -54,15 +54,15 @@ class SQLServer:
         self.conn.commit()
         return self.cursor.rowcount
     
-    def get_all_teachers(self):
-        df = pd.read_sql("SELECT * FROM Teacher", self.conn)
+    def get_all_teachers(self, q):
+        df = pd.read_sql("SELECT * FROM Teacher " + q, self.conn)
         return [Teacher(*kwargs.values()) for kwargs in df.to_dict(orient = 'records')]
     
     def add_one_teacher(self, args):
         id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate'], args['username'], args['password'], args['email'], args['phonenumber'], args['identitycardnumber'], args['group_id']
         # print(id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id)
         try:
-            self.cursor.execute(f"INSERT [User] VALUES('{id}', N'{username}', N'{password}', 'T')")
+            self.cursor.execute(f"INSERT [User] VALUES('{id}', N'{username}', N'{password}', 'GV')")
             self.cursor.execute(f"INSERT Teacher VALUES('{id}', N'{fullname}', '{gender[0]}', '{email}', N'{address}', '{phonenumber}', '{identitycardnumber}', '{convert_to_date_iso8601(birthdate)}', '{group_id}')")
         except pyodbc.IntegrityError as e:
             return "Can't have 2 teachers that have same id"

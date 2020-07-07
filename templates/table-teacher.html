@@ -4,6 +4,34 @@
 <!-- MAIN CONTENT-->
 
 <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/> -->
+
+<script>
+    function sendfitter() {
+        var id = $('#fitter_id').val();
+        var fullname = $('#fitter_name').val();
+        var gender = $('#fitter_gender').val();
+        var email = $('#fitter_email').val();
+        var address = $('#fitter_address').val();
+        var phonenumber = $('#fitter_phone').val();
+        var identitycardnumber = $('#fitter_idcard').val();
+        var birthdate1 = $('#fitter_birth1').val();
+        var birthdate2 = $('#fitter_birth2').val();
+        var group_id = $('#fitter_group_id').val();
+        var queryString ="?fitter=1";
+        if (id) queryString += '&id='+id;
+        if (fullname) queryString += '&fullname='+fullname;
+        if (gender) queryString += '&gender='+gender;
+        if (email) queryString += '&email='+email;
+        if (address) queryString += '&address='+address;
+        if (phonenumber) queryString += '&phonenumber='+phonenumber;
+        if (identitycardnumber) queryString += '&identitycardnumber='+identitycardnumber;
+        if (birthdate1) queryString += '&birthdate1='+birthdate1;
+        if (birthdate2) queryString += '&birthdate2='+birthdate2;
+        if (group_id) queryString += '&group_id='+group_id;
+        window.location.href = "/table/teacher"+queryString;
+    }
+</script>
+
 <div class="main-content">
     <div class="section__content section__content--p30">
         <div class="tab-content">
@@ -13,6 +41,24 @@
                     {% if teachers %}
                     <table class="table table-hover">
                         <thead class="text-success">
+                            <thead class="text-success">
+                                <th><input type="text" id="fitter_id"></th>
+                                <th><input type="text" id="fitter_name"></th>
+                                <th><input type="text" id="fitter_gender"></th>
+                                <th><input type="text" id="fitter_email"></th>
+                                <th><input type="text" id="fitter_address"></th>
+                                <th><input type="text" id="fitter_phone"></th>
+                                <th><input type="text" id="fitter_idcard"></th>
+                                <th><input type="text" id="fitter_birth1" style="border:1px solid black;" placeholder="from" >
+                                    <input type="text" id="fitter_birth2" style="border:1px solid black;" placeholder="to" ></th>
+                                <th><input type="text" id="fitter_group_id"></th>
+                                <th>
+                                    <button type="button" rel="tooltip" title="Fitter" class="btn btn-success btn-simple btn-xs" onclick="sendfitter()">
+                                        <i class="material-icons" style="color: white;">Fitter</i>
+                                    </button>
+                                </th>
+                                <th>    </th>
+                            </thead>
                             <th>Teacher ID</th>
                             <th>Fullname</th>
                             <th>Gender</th>
