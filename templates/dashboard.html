@@ -1,0 +1,71 @@
+{% extends 'base_content.html' %} 
+{% block title %} DashBoard {% endblock %} 
+{% block content %}
+<!-- MAIN CONTENT-->
+
+<!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/> -->
+
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="tab-content">
+            <form action="{{ url_for('dashboard')}}" method="get">
+                <div class="form-group">
+                    <label class="bmd-label-floating">Count</label>
+                    <input type="text" name="count" class="form-control"  value="" required>
+                </div>
+                <div class="form-group">
+                        <label class="bmd-label-floating">Gender</label>
+                        <input type="text" name="gender" class="form-control" value="" required>
+                </div>
+                <button type="submit" class="btn btn-login float-right" style="background-color:#4BD1A0;">SUBMIT
+                </button>
+            </form>
+            
+            <div class="container-fluid">
+                <div class="table-responsive table--no-card m-b-30">
+                    {% if teachers %}
+                    <table class="table table-hover">
+                        <thead class="text-success">
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Number of teacher</th>
+                        </thead>
+                        <tbody>
+                            {% for teacher in teachers %}
+                            <tr>
+                                <td>{{ teacher.Id }}</td>
+                                <td>{{ teacher.Name }}</td>
+                                <td>{{ teacher.Number_of_teachers }}</td>
+                                <td>
+                                    <button type="button" rel="tooltip" title="Edit" class="btn btn-success btn-simple btn-xs" data-toggle="modal" data-target="#edit-teacher-{{teacher.id}}-modal">
+                                        <i class="material-icons" style="color: purple;">edit</i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p> NO DATA </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="subject-table">
+                    <p>this is subject content</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="copyright">
+                    <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+<!-- end document-->

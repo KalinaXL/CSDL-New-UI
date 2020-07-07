@@ -58,6 +58,10 @@ class SQLServer:
         df = pd.read_sql("SELECT * FROM Teacher " + q, self.conn)
         return [Teacher(*kwargs.values()) for kwargs in df.to_dict(orient = 'records')]
     
+    def run_proc3_a(self, count, gender):
+        df = pd.read_sql("EXEC SP_GET_GROUP_WITH_NUMBER @count = "+str(count)+" , @gender = '"+gender+"'", self.conn)
+        return df.to_dict(orient = 'records')
+    
     def add_one_teacher(self, args):
         id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate'], args['username'], args['password'], args['email'], args['phonenumber'], args['identitycardnumber'], args['group_id']
         # print(id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id)

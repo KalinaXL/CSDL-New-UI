@@ -6,6 +6,7 @@ from flask import Flask, request, render_template, redirect, url_for, session, f
 from flask_restful import Api
 from resources import *
 from utils import is_name, is_email, is_phone_number, is_valid_date
+from sql_server import sql
 
 with open("config.json", "r") as f:
     config = json.loads(f.read())
@@ -55,20 +56,15 @@ def login():
     return render_template('login.html', title = 'Login', error = error)
 
 
-@app.route('/dashboard', methods = ['GET', 'POST'])
+@app.route('/dashboard', methods = ['GET'])
 @login_required
 def dashboard():
-    response = requests.get(f'{path}/students')
-    if response:
-        students = response.json()
-    else:
-        students = []
-    response = requests.get(f'{path}/teachers?fitter=1')
-    if response:
-        teachers = response.json()
-    else:
-        teachers = []
-    return render_template("index.html", title = "Dashboard", students = students, teachers = teachers)
+    count = request.args.get('count')
+    gender = request.args.get('gender')
+    data = []
+    if (count and gender):
+        data = sql.run_proc3_a(count, gender)
+    return render_template("dashboard.html", teachers=data)
 
 @app.route('/chart')
 def chart():
