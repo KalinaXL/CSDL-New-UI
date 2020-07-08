@@ -19,6 +19,8 @@ class TeacherListApi(Resource):
             birthdate1 = request.args.get('birthdate1')
             birthdate2 = request.args.get('birthdate2')
             group_id = request.args.get('group_id')
+            sort_field = request.args.get('sort_field')
+            isASC = request.args.get('isASC')
             if(id): queryString += ' AND id LIKE \'%'+ id +'%\''
             if(fullname): queryString += ' AND fullname LIKE \'%'+ fullname +'%\''
             if(gender): queryString += ' AND gender = \''+ gender[0] +'\''
@@ -29,6 +31,8 @@ class TeacherListApi(Resource):
             if(birthdate1): queryString += ' AND Birthdate >= \''+ convert_to_date_iso8601(birthdate1) + '\''
             if(birthdate2): queryString += ' AND Birthdate <= \''+ convert_to_date_iso8601(birthdate2) + '\''
             if(group_id): queryString += ' AND group_id = '+ group_id
+            if(sort_field): queryString += ' ORDER BY ' + sort_field
+            if(sort_field and isASC): queryString += ' ' + isASC 
             
         teachers = sql.get_all_teachers(queryString)
         if teachers:

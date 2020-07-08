@@ -50,7 +50,7 @@ def login():
         response = requests.post(f'{path}/auth/login', data = user)
         if response:
             session['logged_in'] = True
-            return redirect(url_for("table"))
+            return redirect(url_for("dashboard"))
         else:
             error = response.json()['error']
     return render_template('login.html', title = 'Login', error = error)
@@ -61,10 +61,14 @@ def login():
 def dashboard():
     count = request.args.get('count')
     gender = request.args.get('gender')
+    year_id = request.args.get('year_id')
     data = []
     if (count and gender):
         data = sql.run_proc3_a(count, gender)
-    return render_template("dashboard.html", teachers=data)
+    proc2 = []
+    if (year_id):
+        proc2 = sql.run_proc3_b(year_id)
+    return render_template("dashboard.html", teachers=data, fitter_gender=gender, fitter_count=count,fitter_year=year_id, proc2s=proc2)
 
 @app.route('/chart')
 def chart():

@@ -17,6 +17,8 @@
         var birthdate1 = $('#fitter_birth1').val();
         var birthdate2 = $('#fitter_birth2').val();
         var group_id = $('#fitter_group_id').val();
+        var sort_field = document.querySelector('input[name="fitter_sort"]:checked').value;
+        
         var queryString ="?fitter=1";
         if (id) queryString += '&id='+id;
         if (fullname) queryString += '&fullname='+fullname;
@@ -28,6 +30,8 @@
         if (birthdate1) queryString += '&birthdate1='+birthdate1;
         if (birthdate2) queryString += '&birthdate2='+birthdate2;
         if (group_id) queryString += '&group_id='+group_id;
+        if (sort_field) queryString += '&sort_field='+sort_field;
+        if (isASC) queryString += '&isASC='+$('#isASC').val();
         window.location.href = "/table/teacher"+queryString;
     }
 </script>
@@ -42,22 +46,28 @@
                     <table class="table table-hover">
                         <thead class="text-success">
                             <thead class="text-success">
-                                <th><input type="text" id="fitter_id"></th>
-                                <th><input type="text" id="fitter_name"></th>
-                                <th><input type="text" id="fitter_gender"></th>
-                                <th><input type="text" id="fitter_email"></th>
-                                <th><input type="text" id="fitter_address"></th>
-                                <th><input type="text" id="fitter_phone"></th>
-                                <th><input type="text" id="fitter_idcard"></th>
+                                <th><input type="text" id="fitter_id"> <input type="radio"  name="fitter_sort" value="id" checked></th>
+                                <th><input type="text" id="fitter_name"> <input type="radio"  name="fitter_sort" value="fullname"></th>
+                                <th><input type="text" id="fitter_gender"> <input type="radio"  name="fitter_sort" value="gender"></th>
+                                <th><input type="text" id="fitter_email"> <input type="radio"  name="fitter_sort" value="email"></th>
+                                <th><input type="text" id="fitter_address"> <input type="radio"  name="fitter_sort" value="address"></th>
+                                <th><input type="text" id="fitter_phone"> <input type="radio"  name="fitter_sort" value="phonenumber"></th>
+                                <th><input type="text" id="fitter_idcard"> <input type="radio"  name="fitter_sort" value="identitycardnumber"></th>
                                 <th><input type="text" id="fitter_birth1" style="border:1px solid black;" placeholder="from" >
-                                    <input type="text" id="fitter_birth2" style="border:1px solid black;" placeholder="to" ></th>
-                                <th><input type="text" id="fitter_group_id"></th>
+                                    <input type="text" id="fitter_birth2" style="border:1px solid black;" placeholder="to" >
+                                    <input type="radio"  name="fitter_sort" value="birthdate"></th>
+                                <th><input type="text" id="fitter_group_id">  <input type="radio"  name="fitter_sort" value="group_id"></th>
                                 <th>
                                     <button type="button" rel="tooltip" title="Fitter" class="btn btn-success btn-simple btn-xs" onclick="sendfitter()">
                                         <i class="material-icons" style="color: white;">Fitter</i>
                                     </button>
                                 </th>
-                                <th>    </th>
+                                <th>  
+                                    <select id="isASC">
+                                        <option value="ASC">ASC</option>
+                                        <option value="DESC">DESC</option>
+                                    </select>  
+                                </th>
                             </thead>
                             <th>Teacher ID</th>
                             <th>Fullname</th>
@@ -145,10 +155,10 @@
                         </div>
                     </div>
                     <div>
-                        <div class="form-group">
-                            <label class="bmd-label-floating">Gender</label>
-                            <input type="text" name="gender" class="form-control" value="" required>
-                        </div>
+                            <input type="radio"  name="gender" value="Male" checked>
+                            <label for="male">Male</label><br>
+                            <input type="radio"  name="gender" value="Female">
+                            <label for="female">Female</label><br>
                     </div>
                     <div>
                         <div class="form-group">
@@ -236,7 +246,10 @@
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Gender</label>
-                            <input type="text" name="gender" class="form-control" value="{{teacher.gender}}" required>
+                            <input type="radio"  name="gender" value="Male" checked>
+                            <label for="male">Male</label><br>
+                            <input type="radio"  name="gender" value="Female">
+                            <label for="female">Female</label><br>
                         </div>
                     </div>
                     <div>
