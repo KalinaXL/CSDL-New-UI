@@ -64,9 +64,26 @@ def dashboard():
     year_id = request.args.get('year_id')
     data = []
     if (count and gender):
+        try:
+            if int(count) < 0:
+                flash('COUNT phải là 1 số nguyên dương')
+                return render_template("dashboard.html", teachers=[], fitter_gender=[], fitter_count=[],fitter_year=[], proc2s=[])
+            if gender.lower() not in ('male', 'female'):
+                flash('Gender phải là male, hoặc female')
+                return render_template("dashboard.html", teachers=[], fitter_gender=[], fitter_count=[],fitter_year=[], proc2s=[])  
+        except:
+            flash('COUNT phải là 1 số nguyên')
+            return render_template("dashboard.html", teachers=[], fitter_gender=[], fitter_count=[],fitter_year=[], proc2s=[])
         data = sql.run_proc3_a(count, gender)
     proc2 = []
     if (year_id):
+        try:
+            if int(year_id) < 0:
+                flash('YEAR phải là 1 số nguyên dương')
+                return render_template("dashboard.html", teachers=[], fitter_gender=[], fitter_count=[],fitter_year=[], proc2s=[])    
+        except:
+            flash('YEAR phải là 1 số nguyên')
+            return render_template("dashboard.html", teachers=[], fitter_gender=[], fitter_count=[],fitter_year=[], proc2s=[])
         proc2 = sql.run_proc3_b(year_id)
     return render_template("dashboard.html", teachers=data, fitter_gender=gender, fitter_count=count,fitter_year=year_id, proc2s=proc2)
 
@@ -87,6 +104,7 @@ def table():
 @app.route('/table/teacher')
 def table_teacher():
     query_string = str(request.query_string)[2:-1]
+    print(query_string)
     response = requests.get(f'{path}/teachers?'+query_string)
     if response:
         teachers = response.json()
@@ -161,6 +179,7 @@ def delete_student(id):
 @app.route('/delete_teacher/<string:id>')
 def delete_teacher(id):
     response = requests.delete(f'{path}/teachers/{id}')
+    print(response)
     output = response.json()
     if 'error' in output:
         flash(output.get('error'), 'error')
@@ -186,6 +205,7 @@ def add_teacher():
     if request.method == 'POST':
         response = requests.post(f'{path}/teachers/add', data = request.form)
         output = response.json()
+        print(output)
         if 'error' in output:
             flash(output['error'], 'error')
         else:

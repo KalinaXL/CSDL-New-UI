@@ -1,12 +1,14 @@
 import json
 import pyodbc
 import pandas as pd
+import re
 from models import Student, Teacher, Subject
 from utils import convert_to_date_iso8601
 
 with open("config.json", "r") as f:
     config = json.loads(f.read())
 class SQLServer:
+    pattern = '\[SQL Server\](.*) \(\d*\)'
     def __init__(self, config = config['SQL-Server']):
         conn_str = ''
         for key, value in config.items():
@@ -71,15 +73,34 @@ class SQLServer:
         # print(id, fullname, address, gender, birthdate, username, password, email, phonenumber, identitycardnumber, group_id)
         try:
             self.cursor.execute(f"INSERT [User] VALUES('{id}', N'{username}', N'{password}', 'GV')")
-            self.cursor.execute(f"INSERT Teacher VALUES('{id}', N'{fullname}', '{gender[0]}', '{email}', N'{address}', '{phonenumber}', '{identitycardnumber}', '{convert_to_date_iso8601(birthdate)}', '{group_id}')")
+            self.cursor.execute(f"EXEC insert_teacher @Id = '{id}', @Fullname = N'{fullname}', @Gender = '{gender}', @Email = '{email}', @Address = N'{address}', @Phonenumber = '{phonenumber}', @CardId = '{identitycardnumber}', @Birthdate = '{convert_to_date_iso8601(birthdate)}', @Group_id = '{group_id}'")
         except pyodbc.IntegrityError as e:
+            self.conn.commit()
             return "Can't have 2 teachers that have same id"
+        except pyodbc.ProgrammingError as e:
+            self.conn.commit()
+            msg = str(e)
+            match = re.search(SQLServer.pattern, msg)
+            if match:
+                return match.group(1)
+            return msg
+
         self.conn.commit()
         return self.cursor.rowcount
     
     def delete_one_teacher(self, id):
-        self.cursor.execute(f"DELETE Teacher WHERE Id = {id}")
-        self.cursor.execute(f"DELETE [User] WHERE Id = {id}")
+        try:
+            self.cursor.execute(f"EXEC delete_teacher @Id ='{id}'")
+        except pyodbc.ProgrammingError as e:
+            self.conn.commit()
+            msg = str(e)
+            match = re.search(SQLServer.pattern, msg)
+            if match:
+                return match.group(1)
+            return msg
+        except pyodbc.IntegrityError as e:
+            self.conn.commit()
+            return str(e)
         self.conn.commit()
         return self.cursor.rowcount
     
@@ -87,9 +108,18 @@ class SQLServer:
         id, fullname, address, gender, birthdate, email, phonenumber, identitycardnumber, group_id = args['id'], args['fullname'], args['address'], args['gender'], args['birthdate'], args['email'], args['phonenumber'], args['identitycardnumber'], args['group_id']
         # print( birthdate, email, phonenumber, identitycardnumber, group_id)
         try:
-            self.cursor.execute(f"UPDATE Teacher SET fullname='{fullname}', address='{address}', gender='{gender[0]}', birthdate='{convert_to_date_iso8601(birthdate)}', email='{email}', phonenumber='{phonenumber}', identitycardnumber='{identitycardnumber}',group_id='{group_id}'   WHERE id='{id}'")
+            self.cursor.execute(f"EXEC update_teacher @Id = '{id}', @Fullname = N'{fullname}', @Gender = '{gender}', @Email = '{email}', @Address = N'{address}', @Phonenumber = '{phonenumber}', @CardId = '{identitycardnumber}', @Birthdate = '{convert_to_date_iso8601(birthdate)}', @Group_id = '{group_id}'")
         except pyodbc.IntegrityError as e:
-            return "Update error"
+            self.conn.commit()
+            return str(e)
+        except pyodbc.ProgrammingError as e:
+            self.conn.commit()
+            msg = str(e)
+            match = re.search(SQLServer.pattern, msg)
+            print(msg)
+            if match:
+                return match.group(1)
+            return msg
         self.conn.commit()
         return self.cursor.rowcount
     
@@ -103,6 +133,7 @@ class SQLServer:
         try:
             self.cursor.execute(f"INSERT Subject VALUES('{id}', N'{name}', {num_periods}, '{syllabus}', {ratio_score_15}, {ratio_score_45}, {ratio_score_final}, {id_group})")
         except pyodbc.IntegrityError as e:
+            self.conn.commit()
             return "Can't have 2 subjects that have same id"
         self.conn.commit()
         return self.cursor.rowcount
@@ -118,6 +149,7 @@ class SQLServer:
         try:
             self.cursor.execute(f"UPDATE Subject SET name='{name}', num_periods='{num_periods}', syllabus='{syllabus}', ratio_score_15='{ratio_score_15}', ratio_score_45='{ratio_score_45}', ratio_score_final='{ratio_score_final}', id_group='{id_group}'   WHERE id='{id}'")
         except pyodbc.IntegrityError as e:
+            self.conn.commit()
             return "Update error"
         self.conn.commit()
         return self.cursor.rowcount

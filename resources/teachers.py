@@ -75,7 +75,7 @@ class TeacherEditApi(Resource):
         result = sql.update_one_teacher(args)
         if isinstance(result, int):
             return {"message": f"Edit teacher having id {args.id} successfully!"}
-        return {"error": result + ' ' + args.id}, 401
+        return {"error": 'Cập thông giáo viên có mã ' + args.id  + ' : ' +  result}, 401
 
 class TeacherDeleteApi(Resource):
     def delete(self, id):
