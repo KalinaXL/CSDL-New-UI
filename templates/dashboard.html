@@ -25,9 +25,18 @@
             <form action="{{ url_for('dashboard')}}" method="get">
                 <div class='row'>
                         <label class="bmd-label-floating col-1">Count</label>
-                        <input type="text" name="count" class="form-control col-2"  value="" required>
-                        <label class="bmd-label-floating col-1">Gender</label>
-                        <input type="text" name="gender" class="form-control col-2" value="" required>
+                        <input type="number" name="count" class="form-control col-2"  value="" required>
+                        <label class="bmd-label-floating">Gender</label>
+                        <select name="gender" class='col-2'>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <label class="bmd-label-floating ">Sort Field</label>
+                        <select name="sort_field" class='col-1'>
+                            <option value="ma_to">Mã Tổ</option>
+                            <!-- <option value="ten_to">Tên Tổ</option> t'is got error-->
+                            <option value="so_luong_giao_vien">Số Lượng Giáo Viên</option>
+                        </select>
                         {% if fitter_year %}
                         <input type="text" name="year_id" class="form-control col-2" value="{{fitter_year}}" hidden>
                         {% endif %}

@@ -747,6 +747,66 @@ VALUES  ( 'H1' , -- Id_building - char(4)
           40  -- capacity - int
         )
 
+--- Bổ sung
+INSERT INTO dbo.Room
+VALUES  ( 'H2' , -- Id_building - char(4)
+          '01' , -- Id_room - char(6)
+          N'Phòng 01 H2' , -- name - nvarchar(20)
+          40  -- capacity - int
+        )
+
+INSERT INTO dbo.Room
+VALUES  ( 'H2' , -- Id_building - char(4)
+          '02' , -- Id_room - char(6)
+          N'Phòng 02 H2' , -- name - nvarchar(20)
+          40  -- capacity - int
+        )
+
+INSERT INTO dbo.Room
+VALUES  ( 'H2' , -- Id_building - char(4)
+          '03' , -- Id_room - char(6)
+          N'Phòng 03 H2' , -- name - nvarchar(20)
+          40  -- capacity - int
+        )
+
+INSERT INTO dbo.Room
+VALUES  ( 'H2' , -- Id_building - char(4)
+          '04' , -- Id_room - char(6)
+          N'Phòng 04 H2' , -- name - nvarchar(20)
+          40  -- capacity - int
+        )
+
+-----
+INSERT INTO dbo.Room
+VALUES  ( 'H3' , -- Id_building - char(4)
+          '01' , -- Id_room - char(6)
+          N'Phòng 01 H3' , -- name - nvarchar(20)
+          40  -- capacity - int
+        )
+
+INSERT INTO dbo.Room
+VALUES  ( 'H3' , -- Id_building - char(4)
+          '02' , -- Id_room - char(6)
+          N'Phòng 02 H3' , -- name - nvarchar(20)
+          40  -- capacity - int
+        )
+
+INSERT INTO dbo.Room
+VALUES  ( 'H3' , -- Id_building - char(4)
+          '03' , -- Id_room - char(6)
+          N'Phòng 03 H3' , -- name - nvarchar(20)
+          40  -- capacity - int
+        )
+
+INSERT INTO dbo.Room
+VALUES  ( 'H3' , -- Id_building - char(4)
+          '04' , -- Id_room - char(6)
+          N'Phòng 04 H3' , -- name - nvarchar(20)
+          40  -- capacity - int
+        )
+
+--- End
+
 INSERT INTO dbo.Room
 VALUES  ( 'H1' , -- Id_building - char(4)
           '05' , -- Id_room - char(6)
@@ -786,7 +846,7 @@ INSERT INTO dbo.Class
 VALUES  ( '11T1_2020' , -- Id - char(9)
           N'11 Toán 1' , -- name - nvarchar(20)
           '2020' , -- Id_Year - char(10)
-          'H1' , -- Id_building - char(4)
+          'H2' , -- Id_building - char(4)
           '01' , -- Id_room - char(6)
           '1810173' , -- Id_monitor - char(9)
           '000529'  -- Id_form_teacher - char(9)
@@ -796,7 +856,7 @@ INSERT INTO dbo.Class
 VALUES  ( '11L1_2020' , -- Id - char(9)
           N'11 Lý 1' , -- name - nvarchar(20)
           '2020' , -- Id_Year - char(10)
-          'H1' , -- Id_building - char(4)
+          'H2' , -- Id_building - char(4)
           '03' , -- Id_room - char(6)
           '1810887' , -- Id_monitor - char(9)
           '002603'  -- Id_form_teacher - char(9)

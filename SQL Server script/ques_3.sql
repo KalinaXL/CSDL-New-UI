@@ -1,4 +1,4 @@
-﻿CREATE OR ALTER PROC SP_GET_GROUP_WITH_NUMBER @count INT, @gender CHAR(1)
+﻿CREATE OR ALTER PROC SP_GET_GROUP_WITH_NUMBER @count INT, @gender CHAR(1), @ColumnName VARCHAR(20)
 AS
 BEGIN
 	SELECT [Group].Id AS [Ma_to], [Group].Name AS [Ten_to], COUNT(*) AS [So_luong_giao_vien]
@@ -8,6 +8,11 @@ BEGIN
 	WHERE Teacher.Gender = @gender
 	GROUP BY [Group].Id, [Group].Name
 	HAVING COUNT(*) > @count
+	ORDER BY 
+	CASE WHEN @ColumnName='ma_to' THEN [Group].Id
+    --    WHEN @ColumnName='ten_to' THEN [Group].Name
+       WHEN @ColumnName='so_luong_giao_vien' THEN COUNT(*)
+  	END
 END
 GO
 CREATE OR ALTER PROC SP_GET_CLASS @id_year CHAR(10)

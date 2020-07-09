@@ -62,19 +62,21 @@ def dashboard():
     count = request.args.get('count')
     gender = request.args.get('gender')
     year_id = request.args.get('year_id')
+    sort_field = request.args.get('sort_field')
+    if(not sort_field): sort_field='ma_to'
     data = []
     if (count and gender):
         try:
             if int(count) < 0:
                 flash('COUNT phải là 1 số nguyên dương')
-                return render_template("dashboard.html", teachers=[], fitter_gender=[], fitter_count=[],fitter_year=[], proc2s=[])
+                return render_template("dashboard.html", teachers=[],  proc2s=[])
             if gender.lower() not in ('male', 'female'):
                 flash('Gender phải là male, hoặc female')
-                return render_template("dashboard.html", teachers=[], fitter_gender=[], fitter_count=[],fitter_year=[], proc2s=[])  
+                return render_template("dashboard.html", teachers=[],  proc2s=[])  
         except:
             flash('COUNT phải là 1 số nguyên')
-            return render_template("dashboard.html", teachers=[], fitter_gender=[], fitter_count=[],fitter_year=[], proc2s=[])
-        data = sql.run_proc3_a(count, gender)
+            return render_template("dashboard.html", teachers=[],  proc2s=[])
+        data = sql.run_proc3_a(count, gender, sort_field)
     proc2 = []
     if (year_id):
         try:

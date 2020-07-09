@@ -80,6 +80,6 @@ class TeacherEditApi(Resource):
 class TeacherDeleteApi(Resource):
     def delete(self, id):
         rowcount = sql.delete_one_teacher(id)
-        if rowcount:
+        if rowcount > 0:
             return {"message": f"Delete teacher having id {id} successfully!"}
         return {"error": "Can't delete teacher having " + id}, 401

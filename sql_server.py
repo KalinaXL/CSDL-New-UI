@@ -60,8 +60,8 @@ class SQLServer:
         df = pd.read_sql("SELECT * FROM Teacher " + q, self.conn)
         return [Teacher(*kwargs.values()) for kwargs in df.to_dict(orient = 'records')]
     
-    def run_proc3_a(self, count, gender):
-        df = pd.read_sql("EXEC SP_GET_GROUP_WITH_NUMBER @count = "+str(count)+" , @gender = '"+gender+"'", self.conn)
+    def run_proc3_a(self, count, gender, sort_field):
+        df = pd.read_sql("EXEC SP_GET_GROUP_WITH_NUMBER @count = "+str(count)+" , @gender = '"+gender+"', @ColumnName='"+sort_field+"'", self.conn)
         return df.to_dict(orient = 'records')
     
     def run_proc3_b(self, year_id):

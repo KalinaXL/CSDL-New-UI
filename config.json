@@ -7,7 +7,7 @@
     "SQL-Server":
     {
         "Driver": "{ODBC Driver 17 for SQL Server}",
-        "Server": "KLXL",
+        "Server": "DESKTOP-RV6HJ0G",
         "Database": "HighSchoolDB",
         "Trusted_Connection": "yes",
         "Connect Timeout": 10
