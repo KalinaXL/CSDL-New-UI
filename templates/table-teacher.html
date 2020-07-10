@@ -66,8 +66,8 @@
                                 <th><input type="text" id="fitter_address"> <input type="radio"  name="fitter_sort" value="address"></th>
                                 <th><input type="text" id="fitter_phone"> <input type="radio"  name="fitter_sort" value="phonenumber"></th>
                                 <th><input type="text" id="fitter_idcard"> <input type="radio"  name="fitter_sort" value="identitycardnumber"></th>
-                                <th><input type="text" id="fitter_birth1" style="border:1px solid black;" placeholder="from" >
-                                    <input type="text" id="fitter_birth2" style="border:1px solid black;" placeholder="to" >
+                                <th><input type="date" id="fitter_birth1" style="border:1px solid black;" placeholder="from" >
+                                    <input type="date" id="fitter_birth2" style="border:1px solid black;" placeholder="to" >
                                     <input type="radio"  name="fitter_sort" value="birthdate"></th>
                                 <th><input type="text" id="fitter_group_id">  <input type="radio"  name="fitter_sort" value="group_id"></th>
                                 <th>
@@ -176,7 +176,7 @@
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Email</label>
-                            <input type="text" name="email" class="form-control" value="" required>
+                            <input type="email" name="email" class="form-control" value="" required>
                         </div>
                     </div>
                     <div>
@@ -188,25 +188,25 @@
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Phone</label>
-                            <input type="text" name="phonenumber" class="form-control" value="" required>
+                            <input type="tel" name="phonenumber" class="form-control" value="" required>
                         </div>
                     </div>
                     <div>
                         <div class="form-group">
-                            <label class="bmd-label-floating">Identitycardnumber</label>
+                            <label class="bmd-label-floating">Identity card number</label>
                             <input type="text" name="identitycardnumber" class="form-control" value="" required>
                         </div>
                     </div>
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Birthdate</label>
-                            <input type="text" name="birthdate" class="form-control" value="" required>
+                            <input type="date" name="birthdate" class="form-control" value="" required>
                         </div>
                     </div>
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Group id</label>
-                            <input type="text" name="group_id" class="form-control" value="" required>
+                            <input type="number" name="group_id" class="form-control" value="" required>
                         </div>
                     </div>
                     <div>
@@ -259,16 +259,23 @@
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Gender</label>
-                            <input type="radio"  name="gender" value="Male" checked>
-                            <label for="male">Male</label><br>
-                            <input type="radio"  name="gender" value="Female">
-                            <label for="female">Female</label><br>
+                            {% if teacher.gender[0]  == 'M' %}
+                                <input type="radio"  name="gender" value="Male" checked>
+                                <label for="male">Male</label><br>
+                                <input type="radio"  name="gender" value="Female">
+                                <label for="female">Female</label><br>
+                            {% elif teacher.gender[0] == 'F' %}
+                                <input type="radio"  name="gender" value="Male">
+                                <label for="male">Male</label><br>
+                                <input type="radio"  name="gender" value="Female" checked>
+                                <label for="female">Female</label><br>
+                            {% endif %}
                         </div>
                     </div>
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Email</label>
-                            <input type="text" name="email" class="form-control" value="{{teacher.email}}" required>
+                            <input type="email" name="email" class="form-control" value="{{teacher.email}}" required>
                         </div>
                     </div>
                     <div>
@@ -285,20 +292,20 @@
                     </div>
                     <div>
                         <div class="form-group">
-                            <label class="bmd-label-floating">Identitycardnumber</label>
+                            <label class="bmd-label-floating">Identity card number</label>
                             <input type="text" name="identitycardnumber" class="form-control" value="{{teacher.identitycardnumber}}" required>
                         </div>
                     </div>
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Birthdate</label>
-                            <input type="text" name="birthdate" class="form-control" value="{{teacher.birthdate}}" required>
+                            <input type="date" name="birthdate" class="form-control" value="{{fn(teacher.birthdate)}}" required>
                         </div>
                     </div>
                     <div>
                         <div class="form-group">
                             <label class="bmd-label-floating">Group id</label>
-                            <input type="text" name="group_id" class="form-control" value="{{teacher.group_id}}" required>
+                            <input type="number" name="group_id" class="form-control" value="{{teacher.group_id}}" required>
                         </div>
                     </div>
 
